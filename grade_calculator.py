@@ -165,12 +165,14 @@ def compare_students(all_results):
 import csv
 
 def save_to_csv(all_results):
-    filename = "all_students_results.csv"
+    import datetime
+    timestamp=datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"students_results_{timestamp}.csv"
     
     with open(filename, "w", newline="") as f:
         writer = csv.writer(f)
         
-        # Header row
+    
         writer.writerow([
             "Student Name",
             "Total Marks",
@@ -180,7 +182,7 @@ def save_to_csv(all_results):
             "Status"
         ])
         
-        # Data rows
+        
         for result in all_results:
             writer.writerow([
                 result['name'],
