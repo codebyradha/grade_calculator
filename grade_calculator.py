@@ -143,33 +143,109 @@ def save_result(result):
 
     print(f"\nResult saved to '{filename}' successfully!")
 
+def compare_students(all_results):
+    print("\n" + "=" * 80)
+    print("        STUDENT COMPARISON")
+    print(f"{'Name':<20} {'Percentage':>10} {'Grade':>8} {'Rank':>15} {'Status':>8}")
+    print("=" * 80)
+
+    for result in all_results:
+        print(f"{result['name']:<20} {result['percentage']:>9}% {result['grade']:>8} {result['rank']:>15} {result['overall_status']:>8}")
+    
+    print("="  * 80)
+
+
+    topper=max(all_results,key=lambda x:x['percentage'])
+    lowest=min(all_results,key=lambda x:x['percentage'])
+
+    print(f"\n Highest Scorer: {topper['name']} ({topper['percentage']}%)")
+    print(f"\n Lowest Scorer: {lowest['name']} ({lowest['percentage']}%)")
+    print("="  * 80)
+    
+import csv
+
+def save_to_csv(all_results):
+    filename = "all_students_results.csv"
+    
+    with open(filename, "w", newline="") as f:
+        writer = csv.writer(f)
+        
+        # Header row
+        writer.writerow([
+            "Student Name",
+            "Total Marks",
+            "Percentage",
+            "Grade",
+            "Rank",
+            "Status"
+        ])
+        
+        # Data rows
+        for result in all_results:
+            writer.writerow([
+                result['name'],
+                result['total'],
+                result['percentage'],
+                result['grade'],
+                result['rank'],
+                result['overall_status']
+            ])
+    
+    print(f"\n All results saved to '{filename}' successfully!")
+    print("Open it in Excel to see the results!")
 
 def main():
+    all_results=[]
+
     while True:
         print("=" * 40)
         print("            MAIN MENU")
         print("=" * 40)
-        print("1. Calculate Grade")
-        print("2. Exit")
+        print("1.Add Student ")
+        print("2.Show All Results")
+        print("3.Compare Results ")
+        print("4.Save All to CSV")
+        print("5. Exit")
         print("=" * 40)
 
-        choice = input("Enter your choice (1 or 2): ")
+        choice = input("Enter your choice (1-5): ")
 
         if choice == "1":
             name, subjects = get_student_details()
             subjects=update_marks(subjects)
             result = calculate_results(name, subjects)
             display_results(result)
+            all_results.append(result)
+            print(f"\n {name}'s result added successfully!")
+            
+        elif choice=="2":
+            if len(all_results) == 0:
+                print("\n No students added yet!")
+            else:
+                for result in all_results:
+                    display_results(result)
+            input("\nPress Enter to continue...")        
+        
+        elif choice=="3":
+                if len(all_results)<2:
+                    print("\n Add at least 2 students to compare!")
+                else:
+                    compare_students(all_results)
+                input("\nPress Enter to continue...") 
 
-            save = input("\nDo you want to save the result? (yes/no): ")
-            if save.lower() == "yes":
-                save_result(result)
-        elif choice == "2":
+        elif choice=="4":
+            if len(all_results)==0:
+                print("\n No students to save!")
+            else:
+                save_to_csv(all_results)
+                     
+        elif choice == "5":
             print("\nThank You! Goodbye!")
             break
 
         else:
-            print("\nInvalid choice! Please enter 1 or 2.")
+            print("\nInvalid choice! Please enter 1 - 5.")
+            
 
 
 main()
